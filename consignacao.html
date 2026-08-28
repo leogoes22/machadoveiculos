@@ -1007,6 +1007,173 @@ select.field option{background:#140c1c;color:var(--text);}
   .bar select.field{flex:1;min-width:0;}
 }
 
+/* =========================================================
+   26. MODAL DE VEÍCULO — carrossel + ficha técnica
+   ========================================================= */
+.vmodal{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(10px,3vw,34px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .4s var(--ease), visibility 0s linear .4s;
+}
+.vmodal.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .4s var(--ease), visibility 0s;}
+.vmodal-bg{
+  position:absolute;inset:0;background:rgba(4,2,6,.82);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);cursor:pointer;
+}
+.vmodal-box{
+  position:relative;z-index:2;
+  width:min(1120px,100%);max-height:100%;
+  background:linear-gradient(165deg,rgba(28,18,38,.96),rgba(12,7,18,.98));
+  border:1px solid var(--brd-2);border-radius:var(--r-xl);
+  box-shadow:var(--sh-lg),0 0 0 1px rgba(216,76,201,.14);
+  overflow:hidden;display:flex;flex-direction:column;
+  transform:translateY(26px) scale(.97);
+  transition:transform .5s var(--ease-out);
+}
+.vmodal.open .vmodal-box{transform:none;}
+.vmodal-scroll{overflow-y:auto;overscroll-behavior:contain;}
+.vmodal-scroll::-webkit-scrollbar{width:8px;}
+.vmodal-scroll::-webkit-scrollbar-thumb{background:var(--brd-2);border-radius:8px;border:none;}
+
+.vmodal-x{
+  position:absolute;top:14px;right:14px;z-index:6;
+  width:42px;height:42px;border-radius:50%;cursor:pointer;color:#fff;
+  background:rgba(8,4,12,.6);border:1px solid var(--brd-2);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:grid;place-content:center;
+  transition:.35s var(--spring);
+}
+.vmodal-x:hover{background:var(--grad);border-color:transparent;transform:rotate(90deg);}
+
+/* ---- galeria ---- */
+.vgal{background:#08050c;}
+.vgal-palco{position:relative;aspect-ratio:16/10;overflow:hidden;touch-action:pan-y;}
+.vgal-trilho{display:flex;height:100%;transition:transform .5s var(--ease-out);will-change:transform;}
+.vgal-foto{flex:0 0 100%;height:100%;margin:0;background:#0b0710;}
+.vgal-foto img{width:100%;height:100%;object-fit:cover;}
+.vgal-nav{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+  width:46px;height:46px;border-radius:50%;cursor:pointer;color:#fff;
+  background:rgba(8,4,12,.55);border:1px solid var(--brd-2);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:grid;place-content:center;
+  transition:background .3s,border-color .3s,transform .3s var(--spring);
+}
+.vgal-nav:hover{background:var(--grad);border-color:transparent;transform:translateY(-50%) scale(1.1);}
+.vgal-nav.prev{left:14px;}
+.vgal-nav.next{right:14px;}
+.vgal-contador{
+  position:absolute;left:14px;bottom:14px;z-index:3;
+  background:rgba(8,4,12,.62);border:1px solid var(--brd-2);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  padding:6px 14px;border-radius:100px;
+  font-size:.74rem;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;
+}
+.vgal-contador b{color:var(--brand-lt);}
+
+.vgal-thumbs{
+  display:flex;gap:8px;padding:12px 14px;overflow-x:auto;
+  background:rgba(0,0,0,.35);border-top:1px solid var(--brd);
+  scrollbar-width:thin;
+}
+.vgal-thumbs::-webkit-scrollbar{height:5px;}
+.vgal-thumbs::-webkit-scrollbar-thumb{background:var(--brd-2);border-radius:6px;border:none;}
+.vthumb{
+  flex:0 0 84px;height:58px;padding:0;cursor:pointer;overflow:hidden;
+  border:1px solid var(--brd);border-radius:9px;background:var(--panel,#1a1024);
+  opacity:.5;transition:.3s var(--ease);
+}
+.vthumb img{width:100%;height:100%;object-fit:cover;}
+.vthumb:hover{opacity:.85;}
+.vthumb.ativa{opacity:1;border-color:var(--brand-hi);box-shadow:0 0 0 2px rgba(216,76,201,.32);}
+
+/* ---- informações ---- */
+.vinfo{padding:clamp(22px,3vw,34px);}
+.vinfo-topo{display:flex;justify-content:space-between;align-items:flex-start;gap:22px;flex-wrap:wrap;}
+.vinfo-marca{font-size:.66rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--brand-lt);}
+.vinfo-nome{font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.025em;margin-top:5px;}
+.vinfo-versao{color:var(--dim);font-size:.94rem;margin-top:7px;max-width:52ch;}
+.vinfo-preco{text-align:right;}
+.vinfo-preco small{display:block;font-size:.58rem;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:var(--faint);margin-bottom:3px;}
+.vinfo-preco b{
+  font-family:var(--display);font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:800;letter-spacing:-.02em;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  font-variant-numeric:tabular-nums;
+}
+
+.vinfo-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+.vtag{
+  font-size:.75rem;font-weight:600;color:var(--text);
+  background:var(--glass);border:1px solid var(--brd);
+  padding:7px 14px;border-radius:100px;
+}
+
+.vinfo-acoes{display:flex;flex-wrap:wrap;gap:11px;margin-top:24px;}
+.vinfo-acoes .btn{flex:1 1 190px;}
+
+.vficha{margin-top:30px;padding-top:26px;border-top:1px solid var(--brd);}
+.vficha h3{font-size:1.14rem;margin-bottom:16px;}
+.vficha dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;}
+.vficha dl > div{
+  background:var(--glass);border:1px solid var(--brd);border-radius:var(--r-sm);
+  padding:11px 14px;
+}
+.vficha dt{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);}
+.vficha dd{font-size:.9rem;color:var(--text);margin-top:4px;font-weight:600;}
+
+.vitens{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px;}
+.vitens li{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:.86rem;color:var(--dim);line-height:1.45;
+}
+.vitens li svg{flex:none;color:var(--brand-lt);margin-top:3px;}
+
+.vinfo-nota{margin-top:26px;font-size:.76rem;color:var(--faint);line-height:1.55;}
+
+/* card inteiro clicável */
+.card[data-veiculo]{cursor:pointer;}
+
+/* veículo escolhido no financiamento */
+.vsel{
+  display:flex;gap:18px;align-items:center;flex-wrap:wrap;
+  background:linear-gradient(125deg,rgba(123,47,247,.16),rgba(216,76,201,.07));
+  border:1px solid rgba(216,76,201,.3);border-radius:var(--r-lg);
+  padding:16px;margin-bottom:26px;
+  box-shadow:var(--sh-sm);
+}
+.vsel-foto{flex:0 0 148px;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;border:1px solid var(--brd);}
+.vsel-foto img{width:100%;height:100%;object-fit:cover;}
+.vsel-txt{flex:1 1 220px;min-width:0;}
+.vsel-txt span{font-size:.62rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--brand-lt);}
+.vsel-txt h3{font-size:1.28rem;margin:5px 0 4px;}
+.vsel-txt p{font-size:.84rem;color:var(--dim);}
+.vsel-txt b{
+  display:block;margin-top:8px;font-family:var(--display);font-size:1.32rem;font-weight:800;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.vsel-troca{flex:none;}
+
+@media (max-width:900px){
+  .vmodal{padding:0;}
+  .vmodal-box{width:100%;max-height:100%;height:100%;border-radius:0;border:none;}
+  .vgal-palco{aspect-ratio:4/3;}
+  .vgal-nav{width:40px;height:40px;}
+  .vinfo-topo{flex-direction:column;gap:14px;}
+  .vinfo-preco{text-align:left;}
+  .vinfo-acoes .btn{flex:1 1 100%;}
+  .vsel-foto{flex:0 0 110px;}
+}
+
+/* selo com a quantidade de fotos no card */
+.tag.fotos{top:auto;bottom:12px;left:12px;display:inline-flex;align-items:center;gap:6px;}
+.tag.fotos::before{
+  content:"";width:11px;height:9px;border:1.4px solid currentColor;border-radius:2px;
+  box-shadow:2px -2px 0 -0.4px rgba(255,255,255,.5);
+}
+.card[data-veiculo]:focus-visible{outline:2px solid var(--brand-hi);outline-offset:3px;}
+
 </style>
 </head>
 <body>
@@ -1544,10 +1711,18 @@ window.buildFAQ = function(containerId, items){
    --------------------------------------------------------- */
 window.toast = function(msg){
   var t = $("toast");
-  if (!t) return;
+  /* páginas sem toast no HTML (home, estoque) ganham um na hora */
+  if (!t){
+    t = document.createElement("div");
+    t.className = "toast";
+    t.id = "toast";
+    t.innerHTML = '<span class="ic">✓</span><span id="toastMsg"></span>';
+    document.body.appendChild(t);
+  }
   var m = $("toastMsg");
   if (m) m.textContent = msg;
-  t.classList.add("show");
+  /* garante a transição mesmo recém-criado */
+  requestAnimationFrame(function(){ t.classList.add("show"); });
   clearTimeout(t._timer);
   t._timer = setTimeout(function(){ t.classList.remove("show"); }, 4600);
 };
