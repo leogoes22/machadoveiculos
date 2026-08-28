@@ -1007,6 +1007,173 @@ select.field option{background:#140c1c;color:var(--text);}
   .bar select.field{flex:1;min-width:0;}
 }
 
+/* =========================================================
+   26. MODAL DE VEÍCULO — carrossel + ficha técnica
+   ========================================================= */
+.vmodal{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(10px,3vw,34px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .4s var(--ease), visibility 0s linear .4s;
+}
+.vmodal.open{opacity:1;visibility:visible;pointer-events:auto;transition:opacity .4s var(--ease), visibility 0s;}
+.vmodal-bg{
+  position:absolute;inset:0;background:rgba(4,2,6,.82);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);cursor:pointer;
+}
+.vmodal-box{
+  position:relative;z-index:2;
+  width:min(1120px,100%);max-height:100%;
+  background:linear-gradient(165deg,rgba(28,18,38,.96),rgba(12,7,18,.98));
+  border:1px solid var(--brd-2);border-radius:var(--r-xl);
+  box-shadow:var(--sh-lg),0 0 0 1px rgba(216,76,201,.14);
+  overflow:hidden;display:flex;flex-direction:column;
+  transform:translateY(26px) scale(.97);
+  transition:transform .5s var(--ease-out);
+}
+.vmodal.open .vmodal-box{transform:none;}
+.vmodal-scroll{overflow-y:auto;overscroll-behavior:contain;}
+.vmodal-scroll::-webkit-scrollbar{width:8px;}
+.vmodal-scroll::-webkit-scrollbar-thumb{background:var(--brd-2);border-radius:8px;border:none;}
+
+.vmodal-x{
+  position:absolute;top:14px;right:14px;z-index:6;
+  width:42px;height:42px;border-radius:50%;cursor:pointer;color:#fff;
+  background:rgba(8,4,12,.6);border:1px solid var(--brd-2);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:grid;place-content:center;
+  transition:.35s var(--spring);
+}
+.vmodal-x:hover{background:var(--grad);border-color:transparent;transform:rotate(90deg);}
+
+/* ---- galeria ---- */
+.vgal{background:#08050c;}
+.vgal-palco{position:relative;aspect-ratio:16/10;overflow:hidden;touch-action:pan-y;}
+.vgal-trilho{display:flex;height:100%;transition:transform .5s var(--ease-out);will-change:transform;}
+.vgal-foto{flex:0 0 100%;height:100%;margin:0;background:#0b0710;}
+.vgal-foto img{width:100%;height:100%;object-fit:cover;}
+.vgal-nav{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+  width:46px;height:46px;border-radius:50%;cursor:pointer;color:#fff;
+  background:rgba(8,4,12,.55);border:1px solid var(--brd-2);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:grid;place-content:center;
+  transition:background .3s,border-color .3s,transform .3s var(--spring);
+}
+.vgal-nav:hover{background:var(--grad);border-color:transparent;transform:translateY(-50%) scale(1.1);}
+.vgal-nav.prev{left:14px;}
+.vgal-nav.next{right:14px;}
+.vgal-contador{
+  position:absolute;left:14px;bottom:14px;z-index:3;
+  background:rgba(8,4,12,.62);border:1px solid var(--brd-2);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  padding:6px 14px;border-radius:100px;
+  font-size:.74rem;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;
+}
+.vgal-contador b{color:var(--brand-lt);}
+
+.vgal-thumbs{
+  display:flex;gap:8px;padding:12px 14px;overflow-x:auto;
+  background:rgba(0,0,0,.35);border-top:1px solid var(--brd);
+  scrollbar-width:thin;
+}
+.vgal-thumbs::-webkit-scrollbar{height:5px;}
+.vgal-thumbs::-webkit-scrollbar-thumb{background:var(--brd-2);border-radius:6px;border:none;}
+.vthumb{
+  flex:0 0 84px;height:58px;padding:0;cursor:pointer;overflow:hidden;
+  border:1px solid var(--brd);border-radius:9px;background:var(--panel,#1a1024);
+  opacity:.5;transition:.3s var(--ease);
+}
+.vthumb img{width:100%;height:100%;object-fit:cover;}
+.vthumb:hover{opacity:.85;}
+.vthumb.ativa{opacity:1;border-color:var(--brand-hi);box-shadow:0 0 0 2px rgba(216,76,201,.32);}
+
+/* ---- informações ---- */
+.vinfo{padding:clamp(22px,3vw,34px);}
+.vinfo-topo{display:flex;justify-content:space-between;align-items:flex-start;gap:22px;flex-wrap:wrap;}
+.vinfo-marca{font-size:.66rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--brand-lt);}
+.vinfo-nome{font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:800;letter-spacing:-.025em;margin-top:5px;}
+.vinfo-versao{color:var(--dim);font-size:.94rem;margin-top:7px;max-width:52ch;}
+.vinfo-preco{text-align:right;}
+.vinfo-preco small{display:block;font-size:.58rem;font-weight:800;letter-spacing:.17em;text-transform:uppercase;color:var(--faint);margin-bottom:3px;}
+.vinfo-preco b{
+  font-family:var(--display);font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:800;letter-spacing:-.02em;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  font-variant-numeric:tabular-nums;
+}
+
+.vinfo-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+.vtag{
+  font-size:.75rem;font-weight:600;color:var(--text);
+  background:var(--glass);border:1px solid var(--brd);
+  padding:7px 14px;border-radius:100px;
+}
+
+.vinfo-acoes{display:flex;flex-wrap:wrap;gap:11px;margin-top:24px;}
+.vinfo-acoes .btn{flex:1 1 190px;}
+
+.vficha{margin-top:30px;padding-top:26px;border-top:1px solid var(--brd);}
+.vficha h3{font-size:1.14rem;margin-bottom:16px;}
+.vficha dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;}
+.vficha dl > div{
+  background:var(--glass);border:1px solid var(--brd);border-radius:var(--r-sm);
+  padding:11px 14px;
+}
+.vficha dt{font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);}
+.vficha dd{font-size:.9rem;color:var(--text);margin-top:4px;font-weight:600;}
+
+.vitens{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px;}
+.vitens li{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:.86rem;color:var(--dim);line-height:1.45;
+}
+.vitens li svg{flex:none;color:var(--brand-lt);margin-top:3px;}
+
+.vinfo-nota{margin-top:26px;font-size:.76rem;color:var(--faint);line-height:1.55;}
+
+/* card inteiro clicável */
+.card[data-veiculo]{cursor:pointer;}
+
+/* veículo escolhido no financiamento */
+.vsel{
+  display:flex;gap:18px;align-items:center;flex-wrap:wrap;
+  background:linear-gradient(125deg,rgba(123,47,247,.16),rgba(216,76,201,.07));
+  border:1px solid rgba(216,76,201,.3);border-radius:var(--r-lg);
+  padding:16px;margin-bottom:26px;
+  box-shadow:var(--sh-sm);
+}
+.vsel-foto{flex:0 0 148px;aspect-ratio:4/3;border-radius:var(--r);overflow:hidden;border:1px solid var(--brd);}
+.vsel-foto img{width:100%;height:100%;object-fit:cover;}
+.vsel-txt{flex:1 1 220px;min-width:0;}
+.vsel-txt span{font-size:.62rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--brand-lt);}
+.vsel-txt h3{font-size:1.28rem;margin:5px 0 4px;}
+.vsel-txt p{font-size:.84rem;color:var(--dim);}
+.vsel-txt b{
+  display:block;margin-top:8px;font-family:var(--display);font-size:1.32rem;font-weight:800;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.vsel-troca{flex:none;}
+
+@media (max-width:900px){
+  .vmodal{padding:0;}
+  .vmodal-box{width:100%;max-height:100%;height:100%;border-radius:0;border:none;}
+  .vgal-palco{aspect-ratio:4/3;}
+  .vgal-nav{width:40px;height:40px;}
+  .vinfo-topo{flex-direction:column;gap:14px;}
+  .vinfo-preco{text-align:left;}
+  .vinfo-acoes .btn{flex:1 1 100%;}
+  .vsel-foto{flex:0 0 110px;}
+}
+
+/* selo com a quantidade de fotos no card */
+.tag.fotos{top:auto;bottom:12px;left:12px;display:inline-flex;align-items:center;gap:6px;}
+.tag.fotos::before{
+  content:"";width:11px;height:9px;border:1.4px solid currentColor;border-radius:2px;
+  box-shadow:2px -2px 0 -0.4px rgba(255,255,255,.5);
+}
+.card[data-veiculo]:focus-visible{outline:2px solid var(--brand-hi);outline-offset:3px;}
+
 </style>
 </head>
 <body>
@@ -1286,51 +1453,61 @@ select.field option{background:#140c1c;color:var(--text);}
 <script>
 /* =======================================================
    MACHADO VEÍCULOS — Estoque
-   Extraído do site oficial (machadosveiculos.com.br) em
-   27/08/2026. Fotos de capa originais de cada anúncio.
-   Campos: b=marca m=modelo v=versão y=ano(texto) ys=ano(num)
+   Extraído do site oficial (machadosveiculos.com.br).
+   Campos: b=marca m=modelo v=versão y=ano ys=ano(num)
    km=quilometragem cam=câmbio comb=combustível cor=cor
-   p=preço (0 = sob consulta) t=categoria f=destaque i=foto
+   p=preço (0 = sob consulta) t=categoria f=destaque
+   id=código do veículo   g=galeria (nomes das fotos)
+   fx=ficha extra  op=opcionais  se=itens de série
+   As fotos ficam em FOTO_BASE + id + "/" + nome + ".jpg"
    ======================================================= */
+var FOTO_BASE = "https://www.autocerto.com/fotos/1171/";
+
+/* monta a URL completa da foto n (0 = capa) */
+function fotoURL(carro, n){
+  var nome = carro.g && carro.g[n || 0];
+  return nome ? (FOTO_BASE + carro.id + "/" + nome + ".jpg") : "";
+}
+
 var CARS = [
- {b:"Chevrolet",m:"Classic",v:"1.0 MPFI LS 8V Flex 4P Manual",y:"2012",ys:2012,km:0,cam:"Manual",comb:"Flex/GNV",cor:"Cinza",p:28900,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/5369930/2_100648.jpg"},
- {b:"Chevrolet",m:"Corsa",v:"1.4 MPFI Maxx 8V Flex 4P Manual",y:"2011",ys:2011,km:156000,cam:"Manual",comb:"Flex",cor:"Preto",p:26900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/4581196/5_084348.jpg"},
- {b:"Chevrolet",m:"Onix",v:"1.0 MPFI LT 8V Flex 4P Manual",y:"2015",ys:2015,km:173200,cam:"Manual",comb:"Flex/GNV",cor:"Azul",p:44900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/5370774/2_112111.jpg"},
- {b:"Chevrolet",m:"Onix",v:"1.0 MPFI LT 8V Flex 4P Manual",y:"2016",ys:2016,km:129220,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:46500,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/5339942/3_104530.jpg"},
- {b:"Chevrolet",m:"Onix",v:"1.0 Flex LT Manual",y:"2025",ys:2025,km:50579,cam:"Manual",comb:"Flex",cor:"Branco",p:73900,t:"Hatch",f:1,i:"https://www.autocerto.com/fotos/1171/5198250/3_091400.jpg"},
- {b:"Chevrolet",m:"Onix",v:"1.4 MPFI Effect 8V Flex 4P Manual",y:"2015",ys:2015,km:83340,cam:"Manual",comb:"Flex",cor:"Branco",p:53900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/5198241/26_091207.jpg"},
- {b:"Chevrolet",m:"Onix",v:"1.0 MPFI LT 8V Flex 4P Manual",y:"2019",ys:2019,km:88120,cam:"Manual",comb:"Flex",cor:"Branco",p:52900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/4982053/7_045602.jpg"},
- {b:"Chevrolet",m:"Onix",v:"1.0 MPFI LT 8V Flex 4P Manual",y:"2015",ys:2015,km:128284,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:43900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/4934996/3_043845.jpg"},
- {b:"Fiat",m:"Grand Siena",v:"1.4 MPI Attractive 8V Flex 4P Manual",y:"2017",ys:2017,km:119121,cam:"Manual",comb:"Flex/GNV",cor:"Vermelho",p:38900,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/4915180/1_113230.jpg"},
- {b:"Fiat",m:"Mobi",v:"1.0 Evo Flex Like Manual",y:"2019",ys:2019,km:99000,cam:"Manual",comb:"Flex",cor:"Branco",p:42900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/4391376/6_111445.jpg"},
- {b:"Fiat",m:"Siena",v:"1.0 MPI Fire 8V Flex 4P Manual",y:"2010",ys:2010,km:117608,cam:"Manual",comb:"Flex/GNV",cor:"Cinza",p:27900,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/5137649/6_111445.jpg"},
- {b:"Ford",m:"EcoSport",v:"1.6 XLT 8V Flex 4P Manual",y:"2007",ys:2007,km:230155,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:31900,t:"SUV",i:"https://www.autocerto.com/fotos/1171/5339917/1_104310.jpg"},
- {b:"Ford",m:"EcoSport",v:"2.0 Titanium 16V Flex 4P Powershift",y:"2017",ys:2017,km:109109,cam:"Automático",comb:"Flex",cor:"Branco",p:60900,t:"SUV",f:1,i:"https://www.autocerto.com/fotos/1171/5156216/2_104108.jpg"},
- {b:"Ford",m:"Fiesta",v:"1.0 MPI Hatch 8V Flex 4P Manual",y:"2012",ys:2012,km:83336,cam:"Manual",comb:"Flex",cor:"Vermelho",p:27900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/5339860/5_103757.jpg"},
- {b:"Ford",m:"Fiesta",v:"1.6 Titanium Hatch 16V Flex 4P Powershift",y:"2015",ys:2015,km:118663,cam:"Automático",comb:"Flex/GNV",cor:"Branco",p:44900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/4655078/11_012836.jpg"},
- {b:"Ford",m:"Ka",v:"1.5 Sigma Flex SE Manual",y:"2018",ys:2018,km:155551,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:42000,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/5340014/4_105309.jpg"},
- {b:"Honda",m:"Biz 110i",v:"Biz 110i",y:"2024",ys:2024,km:17000,cam:"Manual",comb:"Flex",cor:"Branco",p:13900,t:"Moto",f:1,i:"https://www.autocerto.com/fotos/1171/4327475/7_112335.jpg"},
- {b:"Honda",m:"Civic",v:"2.0 LXR 16V Flex 4P Automático",y:"2014",ys:2014,km:116374,cam:"Automático",comb:"Flex",cor:"Branco",p:71900,t:"Sedã",f:1,i:"https://www.autocerto.com/fotos/1171/5137619/1_015145.jpg"},
- {b:"Honda",m:"Civic",v:"2.0 LXR 16V Flex 4P Automático",y:"2014",ys:2014,km:157375,cam:"Automático",comb:"Flex",cor:"Cinza",p:71900,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/5081524/2_124340.jpg"},
- {b:"Honda",m:"Civic",v:"1.8 LXL 16V Flex 4P Automático",y:"2011",ys:2011,km:104092,cam:"Automático",comb:"Flex",cor:"Prata",p:54200,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/5059663/13_124736.jpg"},
- {b:"Honda",m:"Civic",v:"1.8 LXL 16V Flex 4P Manual",y:"2011",ys:2011,km:139445,cam:"Manual",comb:"Flex",cor:"Prata",p:54200,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/4835839/1_023620.jpg"},
- {b:"Honda",m:"HR-V",v:"1.8 16V Flex LX 4P Automático",y:"2016",ys:2016,km:99546,cam:"Automático",comb:"Flex/GNV",cor:"Prata",p:0,t:"SUV",i:"https://www.autocerto.com/fotos/1171/4984695/12_113342.jpg"},
- {b:"Kia",m:"Cerato",v:"1.6 SX 16V Flex 4P Automático",y:"2016",ys:2016,km:147000,cam:"Automático",comb:"Flex/GNV",cor:"Preto",p:66900,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/4687848/17_102707.jpg"},
- {b:"Kia",m:"Sportage",v:"2.0 LX 4x2 16V Flex 4P Automático",y:"2015",ys:2015,km:125050,cam:"Automático",comb:"Flex",cor:"Branco",p:75900,t:"SUV",f:1,i:"https://www.autocerto.com/fotos/1171/5340098/3_105837.jpg"},
- {b:"Renault",m:"Duster",v:"2.0 Dynamique 4x2 16V Flex 4P Automático",y:"2015",ys:2015,km:119828,cam:"Automático",comb:"Flex",cor:"Prata",p:54000,t:"SUV",i:"https://www.autocerto.com/fotos/1171/5156209/12_103913.jpg"},
- {b:"Renault",m:"Kwid",v:"1.0 12V SCe Flex Zen Manual",y:"2020",ys:2020,km:117000,cam:"Manual",comb:"Flex/GNV",cor:"Branco",p:37800,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/3929823/2_103210.jpg"},
- {b:"Renault",m:"Sandero",v:"1.0 Expression 16V Flex 4P Manual",y:"2012",ys:2012,km:198508,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:29900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/5339760/1_102844.jpg"},
- {b:"Renault",m:"Sandero",v:"1.6 Stepway 16V Flex 4P Manual",y:"2012",ys:2012,km:120000,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:35700,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/4056387/3_015150.jpg"},
- {b:"Toyota",m:"Etios",v:"1.5 XS 16V Flex 4P Automático",y:"2018",ys:2018,km:103781,cam:"Automático",comb:"Flex/GNV",cor:"Branco",p:61000,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/4283250/9_112246.jpg"},
- {b:"Volkswagen",m:"Fox",v:"1.6 MI Seleção 8V Flex 4P Manual",y:"2014",ys:2014,km:139940,cam:"Manual",comb:"Flex",cor:"Branco",p:40900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/5339962/9_104727.jpg"},
- {b:"Volkswagen",m:"Fox",v:"1.6 MI Flex 8V 4P Manual",y:"2012",ys:2012,km:120000,cam:"Manual",comb:"Flex/GNV",cor:"Preto",p:35900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/2799583/16.jpg"},
- {b:"Volkswagen",m:"Gol",v:"1.0 MI 8V Flex 4P Manual G.IV",y:"2010",ys:2010,km:188140,cam:"Manual",comb:"Flex",cor:"Vermelho",p:24900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/5339876/4_103958.jpg"},
- {b:"Volkswagen",m:"Gol",v:"1.6 MI Power 8V Flex 4P Manual G.V",y:"2012",ys:2012,km:139000,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:33900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/5222930/2_104834.jpg"},
- {b:"Volkswagen",m:"Gol",v:"1.6 MSI TotalFlex 4P Manual",y:"2021",ys:2021,km:87142,cam:"Manual",comb:"Flex/GNV",cor:"Vermelho",p:51900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/3570553/5_051047.jpg"},
- {b:"Volkswagen",m:"Parati",v:"1.6 MI Surf 8V Flex 4P Manual G.IV",y:"2008",ys:2008,km:245000,cam:"Manual",comb:"Flex",cor:"Cinza",p:30900,t:"Hatch",i:"https://www.autocerto.com/fotos/1171/2440297/1_101201.jpg"},
- {b:"Volkswagen",m:"Voyage",v:"1.6 MSI TotalFlex Trendline 4P Manual",y:"2018",ys:2018,km:118157,cam:"Manual",comb:"Flex/GNV",cor:"Cinza",p:47900,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/5290218/15_105425.jpg"},
- {b:"Volkswagen",m:"Voyage",v:"1.0 12V MPI TotalFlex Trendline 4P Manual",y:"2017",ys:2017,km:118050,cam:"Manual",comb:"Flex/GNV",cor:"Preto",p:38900,t:"Sedã",i:"https://www.autocerto.com/fotos/1171/4915211/9_113400.jpg"},
- {b:"Yamaha",m:"XTZ 250 Lander",v:"249cc — Trilha / Adventure",y:"2026",ys:2026,km:100,cam:"Manual",comb:"Flex",cor:"Preto",p:0,t:"Moto",f:1,i:"https://www.autocerto.com/fotos/1171/5340150/1_110205.jpg"}
+ {b:"Chevrolet",m:"Classic",v:"1.0 MPFI LS 8V Flex 4P Manual",y:"2012",ys:2012,km:0,cam:"Manual",comb:"Flex/GNV",cor:"Cinza",p:28900,t:"Sedã",id:"5369930",g:["2_100648", "1_100648", "10_100648", "3_100648", "5_100648", "9_100648", "11_100648", "4_100648", "12_100648", "6_100648", "7_100648", "8_100648", "13_100648", "14_100648"]},
+ {b:"Chevrolet",m:"Corsa",v:"1.4 MPFI Maxx 8V Flex 4P Manual",y:"2011",ys:2011,km:156000,cam:"Manual",comb:"Flex",cor:"Preto",p:26900,t:"Hatch",id:"4581196",g:["5_084348", "3_084348", "4_084348", "1_084348", "6_084348", "2_084348"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Direção hidráulica", "Porta copos", "Encosto de cabeça traseiro"]},
+ {b:"Chevrolet",m:"Onix",v:"1.0 MPFI LT 8V Flex 4P Manual",y:"2015",ys:2015,km:173200,cam:"Manual",comb:"Flex/GNV",cor:"Azul",p:44900,t:"Hatch",id:"5370774",g:["2_112111", "4_112111", "5_112111", "1_112111", "6_112111", "7_112111", "3_112111", "8_112111", "13_112111", "9_112111", "10_112111", "11_112111", "12_112111"],op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Alarme", "Desembaçador traseiro", "Travas elétricas", "Limpador traseiro", "Direção hidráulica", "Multimídia", "Volante com regulagem de altura", "Airbag laterais", "Airbag motorista"]},
+ {b:"Chevrolet",m:"Onix",v:"1.0 MPFI LT 8V Flex 4P Manual",y:"2016",ys:2016,km:129220,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:46500,t:"Hatch",id:"5339942",g:["3_104530", "1_104530", "2_104530", "4_104530", "5_104530", "12_104530", "16_104530", "6_104530", "7_104530", "8_104530", "13_104530", "17_104530", "9_104530", "14_104530", "18_104530", "10_104530", "15_104530", "11_104530"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Limpador traseiro", "Multimídia", "Airbag laterais", "Airbag motorista", "Pára-choques na cor do veículo"]},
+ {b:"Chevrolet",m:"Onix",v:"1.0 Flex LT Manual",y:"2025",ys:2025,km:50579,cam:"Manual",comb:"Flex",cor:"Branco",p:73900,t:"Hatch",f:1,id:"5198250",g:["3_091400", "11_091400", "12_091401", "4_091400", "7_091400", "12_091400", "5_091400", "10_091400", "1_091400", "2_091400", "15_091401", "6_091400", "13_091401", "8_091400", "9_091400", "14_091401"],fx:{"Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Desembaçador traseiro", "Freios ABS", "Rodas de liga leve", "Travas elétricas", "Direção elétrica", "Multimídia", "Porta copos", "Controle de som no volante", "Vidros elétricos traseiros", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Pára-choques na cor do veículo", "DVD player", "Entrada USB"],se:["Garantia de Fábrica", "Manual do proprietário", "Chave Reserva", "Licenciado"]},
+ {b:"Chevrolet",m:"Onix",v:"1.4 MPFI Effect 8V Flex 4P Manual",y:"2015",ys:2015,km:83340,cam:"Manual",comb:"Flex",cor:"Branco",p:53900,t:"Hatch",id:"5198241",g:["26_091207", "11_091207", "12_091207", "27_091207", "20_091207", "13_091207", "19_091207", "33_091207", "14_091207", "15_091207", "32_091207", "16_091207", "17_091207", "28_091207", "18_091207", "29_091207"],fx:{"Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Direção hidráulica", "Porta copos", "Vidros elétricos traseiros", "Computador de bordo", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB"],se:["Manual do proprietário", "Chave Reserva", "Licenciado"]},
+ {b:"Chevrolet",m:"Onix",v:"1.0 MPFI LT 8V Flex 4P Manual",y:"2019",ys:2019,km:88120,cam:"Manual",comb:"Flex",cor:"Branco",p:52900,t:"Hatch",id:"4982053",g:["7_045602", "4_045602", "5_045602", "6_045602", "8_045602", "2_045602", "10_045602", "11_045602", "9_045602", "12_045602", "3_045602", "13_045602", "14_045602", "15_045602", "16_045602"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Limpador traseiro", "Direção hidráulica", "Banco do motorista com ajuste de altura", "Computador de bordo", "Piloto automático", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB"]},
+ {b:"Chevrolet",m:"Onix",v:"1.0 MPFI LT 8V Flex 4P Manual",y:"2015",ys:2015,km:128284,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:43900,t:"Hatch",id:"4934996",g:["3_043845", "13_043846", "14_043846", "17_043846", "9_043845", "8_043845", "15_043846", "16_043846", "2_043845", "12_043846", "10_043846", "11_043846", "6_043845", "4_043845", "18_043846", "5_043845", "19_043846", "1_043845", "7_043845"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Freios ABS", "Travas elétricas", "Limpador traseiro", "Direção hidráulica", "Porta copos", "Vidros elétricos traseiros", "Banco do motorista com ajuste de altura", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB"],se:["Manual do proprietário"]},
+ {b:"Fiat",m:"Grand Siena",v:"1.4 MPI Attractive 8V Flex 4P Manual",y:"2017",ys:2017,km:119121,cam:"Manual",comb:"Flex/GNV",cor:"Vermelho",p:38900,t:"Sedã",id:"4915180",g:["1_113230", "8_113230", "11_113230", "16_113230", "14_113230", "4_113230", "12_113230", "3_113230", "9_113230", "10_113230", "2_113230", "15_113230", "17_113230", "5_113230", "18_113230", "13_113230", "6_113230"],fx:{"IPVA": "Pago", "Status": "Licenciado", "Passagem por leilão": "Sim"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Direção hidráulica", "Porta copos", "Vidros elétricos traseiros", "Banco do motorista com ajuste de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB"],se:["IPVA Pago", "Manual do proprietário", "Chave Reserva", "Licenciado"]},
+ {b:"Fiat",m:"Mobi",v:"1.0 Evo Flex Like Manual",y:"2019",ys:2019,km:99000,cam:"Manual",comb:"Flex",cor:"Branco",p:42900,t:"Hatch",id:"4391376",g:["1_084646", "3_084646", "10_084646", "11_084646", "14_084646", "8_084646", "17_084646", "9_084646", "16_084646", "15_084646", "13_084646", "4_084646", "5_084646", "18_084646", "12_084646", "6_084646", "7_084646"],op:["Ar quente", "Ar condicionado", "Limpador traseiro", "Direção hidráulica", "Porta copos", "Airbag laterais", "Airbag motorista", "Encosto de cabeça traseiro", "Entrada USB"]},
+ {b:"Fiat",m:"Siena",v:"1.0 MPI Fire 8V Flex 4P Manual",y:"2010",ys:2010,km:117608,cam:"Manual",comb:"Flex/GNV",cor:"Cinza",p:27900,t:"Sedã",id:"5137649",g:["6_111445", "3_111445", "4_111445", "5_111445", "1_111444", "7_111445", "2_111445", "1_111445", "12_111445", "8_111445", "9_111445", "10_111445", "11_111445"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Direção hidráulica", "Porta copos", "Airbag passageiro", "Encosto de cabeça traseiro"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Ford",m:"EcoSport",v:"1.6 XLT 8V Flex 4P Manual",y:"2007",ys:2007,km:230155,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:31900,t:"SUV",id:"5339917",g:["1_104310", "3_104310", "2_104310", "11_104310", "5_104310", "10_104310", "4_104310", "6_104310", "12_104310", "7_104310", "13_104310", "8_104310", "14_104310", "9_104310"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Limpador traseiro", "Direção hidráulica", "Airbag laterais", "Airbag motorista", "Airbag passageiro", "Entrada USB", "Rack de teto"],se:["IPVA Pago", "Manual do proprietário", "Licenciado"]},
+ {b:"Ford",m:"EcoSport",v:"2.0 Titanium 16V Flex 4P Powershift",y:"2017",ys:2017,km:109109,cam:"Automático",comb:"Flex",cor:"Branco",p:60900,t:"SUV",f:1,id:"5156216",g:["2_104108", "10_104109", "1_104108", "6_104109", "3_104108", "16_104109", "13_104109", "5_104108", "6_104108", "11_104109", "12_104109", "7_104109", "17_104109", "14_104109", "15_104109", "4_104108", "9_104109"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Bancos de couro", "Retrovisores elétricos", "Vidros elétricos", "Farol de neblina", "Freios ABS", "Rodas de liga leve", "Travas elétricas", "Limpador traseiro", "Direção elétrica", "Porta copos", "Vidros elétricos traseiros", "Computador de bordo", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Pára-choques na cor do veículo", "CD player com MP3", "Entrada USB", "Farol de milha"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Ford",m:"Fiesta",v:"1.0 MPI Hatch 8V Flex 4P Manual",y:"2012",ys:2012,km:83336,cam:"Manual",comb:"Flex",cor:"Vermelho",p:27900,t:"Hatch",id:"5339860",g:["5_103757", "1_103757", "2_103757", "3_103757", "11_103757", "12_103758", "13_103758", "6_103757", "8_103757", "4_103757", "12_103757", "7_103757", "14_103758", "15_103758", "9_103757", "10_103757"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Travas elétricas", "Limpador traseiro", "Insufilm", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Pára-choques na cor do veículo"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Ford",m:"Fiesta",v:"1.6 Titanium Hatch 16V Flex 4P Powershift",y:"2015",ys:2015,km:118663,cam:"Automático",comb:"Flex/GNV",cor:"Branco",p:44900,t:"Hatch",id:"4655078",g:["11_012836", "7_012836", "18_012836", "13_012836", "12_012836", "9_012836", "6_012836", "10_012836", "2_012836", "14_012836", "17_012836", "3_012836", "5_012836", "1_012836", "16_012836", "8_012836", "15_012836"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Freios ABS", "Rodas de liga leve", "Travas elétricas", "Limpador traseiro", "Direção elétrica", "Porta copos", "Vidros elétricos traseiros", "Computador de bordo", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB", "Farol de milha"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Ford",m:"Ka",v:"1.5 Sigma Flex SE Manual",y:"2018",ys:2018,km:155551,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:42000,t:"Hatch",id:"5340014",g:["4_105309", "1_105309", "2_105309", "8_105309", "3_105309", "5_105309", "10_105309", "9_105309", "6_105309", "11_105309", "7_105309", "12_105309"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Direção elétrica", "Volante com regulagem de altura", "Airbag laterais", "Airbag motorista"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Honda",m:"Biz 110i",v:"Biz 110i",y:"2024",ys:2024,km:17000,cam:"Manual",comb:"Flex",cor:"Branco",p:13900,t:"Moto",f:1,id:"4327475",g:["7_112335", "1_112335", "2_112335", "3_112335", "4_112335", "5_112335", "6_112335", "8_112335", "9_112335", "10_112335", "11_112335", "12_112335", "13_112335", "14_112335", "15_112335", "16_112335"],fx:{"Status": "Licenciado"},se:["Manual do proprietário", "Chave Reserva", "Licenciado"]},
+ {b:"Honda",m:"Civic",v:"2.0 LXR 16V Flex 4P Automático",y:"2014",ys:2014,km:116374,cam:"Automático",comb:"Flex",cor:"Branco",p:71900,t:"Sedã",f:1,id:"5137619",g:["1_015145", "1_015150", "1_015141", "1_015147", "1_015134", "1_015135", "1_015136", "1_015138", "1_015144", "1_015153", "1_015149", "1_015143", "1_015151", "1_015139", "1_015146", "1_015154", "1_015142"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Bancos de couro", "Vidros elétricos", "Freios ABS", "Rodas de liga leve", "Multimídia", "Porta copos", "Vidros elétricos traseiros", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Faróis de xenon", "Entrada USB", "Farol de milha", "Câmera de ré"],se:["IPVA Pago", "Chave Reserva", "Licenciado"]},
+ {b:"Honda",m:"Civic",v:"2.0 LXR 16V Flex 4P Automático",y:"2014",ys:2014,km:157375,cam:"Automático",comb:"Flex",cor:"Cinza",p:71900,t:"Sedã",id:"5081524",g:["2_124340", "6_124340", "7_124340", "8_124340", "8_124341", "9_124341", "12_124341", "3_124340", "12_124342", "11_124341", "10_124341", "4_124340", "16_124342", "13_124342", "14_124342", "1_124340", "5_124340", "15_124342"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Bancos de couro", "Vidros elétricos", "Farol de neblina", "Freios ABS", "Travas elétricas", "Direção elétrica", "Porta copos", "Controle de som no volante", "Vidros elétricos traseiros", "Computador de bordo", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Farol de milha"],se:["IPVA Pago", "Chave Reserva", "Licenciado"]},
+ {b:"Honda",m:"Civic",v:"1.8 LXL 16V Flex 4P Automático",y:"2011",ys:2011,km:104092,cam:"Automático",comb:"Flex",cor:"Prata",p:54200,t:"Sedã",id:"5059663",g:["13_124736", "1_124736", "2_124736", "15_124736", "14_124736", "3_124736", "4_124736", "6_124736", "7_124736", "8_124736", "16_124736", "17_124736", "21_124736", "10_124736", "18_124736", "11_124736", "19_124736", "12_124736", "20_124736", "5_124736"],fx:{"Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Bancos de couro", "Vidros elétricos", "Farol de neblina", "Rodas de liga leve", "Travas elétricas", "Direção elétrica", "Multimídia", "Porta copos", "Vidros elétricos traseiros", "Computador de bordo", "Airbag laterais", "Airbag motorista", "Encosto de cabeça traseiro", "Pára-choques na cor do veículo", "Entrada USB", "Farol de milha"],se:["Manual do proprietário", "Licenciado"]},
+ {b:"Honda",m:"Civic",v:"1.8 LXL 16V Flex 4P Manual",y:"2011",ys:2011,km:139445,cam:"Manual",comb:"Flex",cor:"Prata",p:54200,t:"Sedã",id:"4835839",g:["1_023620", "8_023620", "9_023620", "2_023620", "10_023620", "11_023620", "3_023620", "4_023620", "5_023620", "13_023620", "15_023620", "14_023620", "7_023620", "6_023620", "12_023620"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Direção hidráulica", "Vidros elétricos traseiros", "Banco do motorista com ajuste de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB"],se:["IPVA Pago", "Manual do proprietário", "Chave Reserva", "Licenciado"]},
+ {b:"Honda",m:"HR-V",v:"1.8 16V Flex LX 4P Automático",y:"2016",ys:2016,km:99546,cam:"Automático",comb:"Flex/GNV",cor:"Prata",p:0,t:"SUV",id:"4984695",g:["12_113342", "9_113342", "10_113342", "1_113342", "11_113342", "2_113342", "13_113342", "4_113342", "3_113342", "5_113342", "19_113342", "16_113342", "15_113342", "6_113342", "20_113342", "17_113342", "7_113342", "18_113342", "8_113342"],fx:{"IPVA": "Pago", "Status": "Licenciado", "Passagem por leilão": "Sim"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Freios ABS", "Rodas de liga leve", "Travas elétricas", "Limpador traseiro", "Direção elétrica", "Multimídia", "Porta copos", "Vidros elétricos traseiros", "Computador de bordo", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB", "Câmera de ré"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Kia",m:"Cerato",v:"1.6 SX 16V Flex 4P Automático",y:"2016",ys:2016,km:147000,cam:"Automático",comb:"Flex/GNV",cor:"Preto",p:66900,t:"Sedã",id:"4687848",g:["17_102707", "18_102707", "15_102707", "13_102707", "4_102707", "10_102707", "12_102707", "11_102707", "8_102707", "2_102707", "5_102707", "9_102707", "6_102707", "7_102707", "14_102707", "19_102707", "1_102707", "16_102707"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Bancos de couro", "Retrovisores elétricos", "Vidros elétricos", "Freios ABS", "Rodas de liga leve", "Direção hidráulica", "Direção elétrica", "Porta copos", "Vidros elétricos traseiros", "Computador de bordo", "Piloto automático", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Pára-choques na cor do veículo", "Entrada USB"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Kia",m:"Sportage",v:"2.0 LX 4x2 16V Flex 4P Automático",y:"2015",ys:2015,km:125050,cam:"Automático",comb:"Flex",cor:"Branco",p:75900,t:"SUV",f:1,id:"5340098",g:["3_105837", "1_105837", "2_105837", "11_105837", "4_105837", "12_105837", "16_105838", "5_105837", "13_105837", "6_105837", "14_105837", "17_105838", "10_105837", "15_105837", "8_105837", "9_105837", "16_105837"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Bancos de couro", "Vidros elétricos", "Desembaçador traseiro", "Rodas de liga leve", "Travas elétricas", "Limpador traseiro", "Direção elétrica", "Ar condicionado digital", "Multimídia", "Porta copos", "Insufilm", "Vidros elétricos traseiros", "Banco do motorista com ajuste de altura", "Computador de bordo", "Volante com regulagem de altura", "Airbag laterais", "Airbag motorista", "Airbag passageiro", "Controle de estabilidade", "Encosto de cabeça traseiro", "Pára-choques na cor do veículo", "Bluetooth", "Entrada USB", "ISOFIX", "Assistente de partida em rampa", "Auto Hold"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Renault",m:"Duster",v:"2.0 Dynamique 4x2 16V Flex 4P Automático",y:"2015",ys:2015,km:119828,cam:"Automático",comb:"Flex",cor:"Prata",p:54000,t:"SUV",id:"5156209",g:["12_103913", "1_103913", "10_103913", "2_103913", "11_103913", "17_103913", "18_103913", "5_103913", "6_103913", "16_103913", "13_103913", "7_103913", "14_103913", "8_103913", "15_103913", "9_103913", "3_103913", "19_103913"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Freios ABS", "Rodas de liga leve", "Travas elétricas", "Direção elétrica", "Multimídia", "Porta copos", "Controle de som no volante", "Vidros elétricos traseiros", "Banco do motorista com ajuste de altura", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Renault",m:"Kwid",v:"1.0 12V SCe Flex Zen Manual",y:"2020",ys:2020,km:117000,cam:"Manual",comb:"Flex/GNV",cor:"Branco",p:37800,t:"Hatch",id:"3929823",g:["2_103210", "1_103210", "3_103210", "9_103210", "17_103210", "10_103210", "11_103210", "12_103210", "4_103210", "5_103210", "6_103210", "7_103210", "13_103210", "14_103210", "15_103210", "16_103210"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Limpador traseiro", "Porta copos", "Vidros elétricos traseiros", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB"],se:["IPVA Pago", "Manual do proprietário", "Chave Reserva", "Licenciado"]},
+ {b:"Renault",m:"Sandero",v:"1.0 Expression 16V Flex 4P Manual",y:"2012",ys:2012,km:198508,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:29900,t:"Hatch",id:"5339760",g:["1_102844", "2_102844", "10_102844", "11_102844", "3_102844", "5_102844", "4_102844", "12_102844", "6_102844", "7_102844", "13_102844", "8_102844", "9_102844"],op:["Ar condicionado", "Vidros elétricos", "Travas elétricas", "Direção hidráulica", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Pára-choques na cor do veículo"]},
+ {b:"Renault",m:"Sandero",v:"1.6 Stepway 16V Flex 4P Manual",y:"2012",ys:2012,km:120000,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:35700,t:"Hatch",id:"4056387",g:["3_015150", "1_015150", "2_015150", "1_112945", "12_112945", "4_112945", "5_112945", "13_112945", "11_112945", "6_112945", "3_112945", "14_112945", "9_112945", "10_112945"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Freios ABS", "Travas elétricas", "Limpador traseiro", "Direção hidráulica", "Porta copos", "Vidros elétricos traseiros", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Pára-choques na cor do veículo", "Entrada USB"],se:["IPVA Pago", "Manual do proprietário", "Licenciado"]},
+ {b:"Toyota",m:"Etios",v:"1.5 XS 16V Flex 4P Automático",y:"2018",ys:2018,km:103781,cam:"Automático",comb:"Flex/GNV",cor:"Branco",p:61000,t:"Sedã",id:"4283250",g:["9_112246", "8_112246", "7_112246", "15_112246", "5_112246", "17_112246", "10_112246", "1_112246", "6_112246", "13_112246", "11_112246", "2_112246", "12_112246", "3_112246", "4_112246", "14_112246", "16_112246"],op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Freios ABS", "Travas elétricas", "Direção elétrica", "Multimídia", "Porta copos", "Controle de som no volante", "Volante com regulagem de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Pára-choques na cor do veículo", "Entrada USB"]},
+ {b:"Volkswagen",m:"Fox",v:"1.6 MI Seleção 8V Flex 4P Manual",y:"2014",ys:2014,km:139940,cam:"Manual",comb:"Flex",cor:"Branco",p:40900,t:"Hatch",id:"5339962",g:["9_104727", "1_104727", "2_104727", "7_104727", "13_104727", "8_104727", "3_104727", "4_104727", "10_104727", "12_104727", "5_104727", "11_104727", "6_104727"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Freios ABS", "Travas elétricas", "Limpador traseiro", "Direção hidráulica", "Airbag laterais", "Airbag motorista", "Pára-choques na cor do veículo", "CD player com MP3", "ISOFIX"],se:["IPVA Pago", "Licenciado"]},
+ {b:"Volkswagen",m:"Fox",v:"1.6 MI Flex 8V 4P Manual",y:"2012",ys:2012,km:120000,cam:"Manual",comb:"Flex/GNV",cor:"Preto",p:35900,t:"Hatch",id:"2799583",g:["16", "17", "18", "6", "12", "14", "2", "3", "4", "5", "7", "8", "9", "10", "11"],op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Limpador traseiro", "Direção hidráulica", "Porta copos", "Encosto de cabeça traseiro"]},
+ {b:"Volkswagen",m:"Gol",v:"1.0 MI 8V Flex 4P Manual G.IV",y:"2010",ys:2010,km:188140,cam:"Manual",comb:"Flex",cor:"Vermelho",p:24900,t:"Hatch",id:"5339876",g:["4_103958", "1_103958", "2_103958", "10_103958", "3_103958", "11_103958", "9_103958", "5_103958", "6_103958", "12_103958", "7_103958", "8_103958"],op:["Ar quente", "Ar condicionado", "Limpador traseiro", "Direção hidráulica", "Airbag laterais", "Airbag motorista", "Encosto de cabeça traseiro", "ISOFIX"]},
+ {b:"Volkswagen",m:"Gol",v:"1.6 MI Power 8V Flex 4P Manual G.V",y:"2012",ys:2012,km:139000,cam:"Manual",comb:"Flex/GNV",cor:"Prata",p:33900,t:"Hatch",id:"5222930",g:["2_104834", "1_104834", "10_104834", "11_104834", "3_104834", "4_104834", "12_104834", "5_104834", "13_104834", "18_104834", "6_104834", "14_104834", "7_104834", "15_104834", "19_104834", "8_104834", "16_104834", "9_104834", "17_104834"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Direção hidráulica", "Porta copos", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB"]},
+ {b:"Volkswagen",m:"Gol",v:"1.6 MSI TotalFlex 4P Manual",y:"2021",ys:2021,km:87142,cam:"Manual",comb:"Flex/GNV",cor:"Vermelho",p:51900,t:"Hatch",id:"3570553",g:["5_051047", "1_051047", "2_051047", "17_051047", "13_051047", "15_051047", "16_051047", "3_051047", "4_051047", "6_051047", "8_051047", "14_051047", "10_051047", "9_051047", "11_051047", "7_051047"],fx:{"Portas": "4", "IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Limpador traseiro", "Direção hidráulica", "Porta copos", "Airbag laterais", "Airbag motorista", "Encosto de cabeça traseiro", "Entrada USB"],se:["Manual do proprietário"]},
+ {b:"Volkswagen",m:"Parati",v:"1.6 MI Surf 8V Flex 4P Manual G.IV",y:"2008",ys:2008,km:245000,cam:"Manual",comb:"Flex",cor:"Cinza",p:30900,t:"Hatch",id:"2440297",g:["1_101201", "2_101201", "3_101201", "4_101201", "13_101201", "11_101201", "6_101201", "7_101201", "5_101201", "12_101201", "8_101201", "9_101201", "10_101201"],op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Limpador traseiro", "Direção hidráulica", "Porta copos", "Encosto de cabeça traseiro", "Farol de milha"]},
+ {b:"Volkswagen",m:"Voyage",v:"1.6 MSI TotalFlex Trendline 4P Manual",y:"2018",ys:2018,km:118157,cam:"Manual",comb:"Flex/GNV",cor:"Cinza",p:47900,t:"Sedã",id:"5290218",g:["15_105425", "7_105425", "1_105425", "14_105425", "8_105425", "9_105425", "5_105425", "13_105425", "6_105425", "10_105425", "12_105425", "2_105425", "3_105425", "4_105425", "11_105425"],fx:{"IPVA": "Pago", "Status": "Licenciado"},op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Direção hidráulica", "Porta copos", "Vidros elétricos traseiros", "Banco do motorista com ajuste de altura", "Airbag motorista", "Airbag passageiro", "Encosto de cabeça traseiro", "Entrada USB"],se:["Chave Reserva"]},
+ {b:"Volkswagen",m:"Voyage",v:"1.0 12V MPI TotalFlex Trendline 4P Manual",y:"2017",ys:2017,km:118050,cam:"Manual",comb:"Flex/GNV",cor:"Preto",p:38900,t:"Sedã",id:"4915211",g:["9_113400", "8_113400", "1_113400", "7_113400", "10_113400", "17_113400", "11_113400", "12_113400", "4_113400", "13_113400", "14_113400", "2_113400", "3_113400", "15_113400", "5_113400", "16_113400", "6_113400", "18_113400"],op:["Ar quente", "Ar condicionado", "Vidros elétricos", "Travas elétricas", "Direção hidráulica", "Porta copos", "Banco do motorista com ajuste de altura", "Computador de bordo", "Airbag motorista", "Encosto de cabeça traseiro", "Entrada USB"]},
+ {b:"Yamaha",m:"XTZ 250 Lander",v:"249cc — Trilha / Adventure",y:"2026",ys:2026,km:100,cam:"Manual",comb:"Flex",cor:"Preto",p:0,t:"Moto",f:1,id:"5340150",g:["1_110205", "2_110205", "6_110205", "3_110205", "4_110205", "7_110205", "8_110205", "5_110205"],fx:{"IPVA": "Pago", "Status": "Licenciado"},se:["Garantia de Fábrica", "Manual do proprietário", "Chave Reserva"]}
 ];
 
 </script>
@@ -1588,10 +1765,18 @@ window.buildFAQ = function(containerId, items){
    --------------------------------------------------------- */
 window.toast = function(msg){
   var t = $("toast");
-  if (!t) return;
+  /* páginas sem toast no HTML (home, estoque) ganham um na hora */
+  if (!t){
+    t = document.createElement("div");
+    t.className = "toast";
+    t.id = "toast";
+    t.innerHTML = '<span class="ic">✓</span><span id="toastMsg"></span>';
+    document.body.appendChild(t);
+  }
   var m = $("toastMsg");
   if (m) m.textContent = msg;
-  t.classList.add("show");
+  /* garante a transição mesmo recém-criado */
+  requestAnimationFrame(function(){ t.classList.add("show"); });
   clearTimeout(t._timer);
   t._timer = setTimeout(function(){ t.classList.remove("show"); }, 4600);
 };
@@ -1709,13 +1894,15 @@ function esc(s){
    --------------------------------------------------------- */
 function card(c, idx){
   var priceTxt = c.p ? window.brl(c.p) : "Sob consulta";
-  var msg = "Olá! Tenho interesse no " + c.b + " " + c.m + " " + c.v +
-            " (" + c.y + ") — " + priceTxt + ". Ainda está disponível?";
-  return '<article class="card" data-glow style="--d:' + (Math.min(idx,9) * 55) + 'ms">' +
+  var nFotos = (c.g && c.g.length) || 0;
+  return '<article class="card" data-glow data-veiculo="' + c.id + '" ' +
+      'role="button" tabindex="0" aria-label="Ver detalhes do ' + esc(c.b + " " + c.m) + '" ' +
+      'style="--d:' + (Math.min(idx,9) * 55) + 'ms">' +
     '<div class="card-img">' +
-      '<img src="' + c.i + '" alt="' + esc(c.b + " " + c.m) + '" loading="lazy" decoding="async">' +
+      '<img src="' + fotoURL(c, 0) + '" alt="' + esc(c.b + " " + c.m) + '" loading="lazy" decoding="async">' +
       '<span class="tag">' + esc(c.t) + '</span>' +
       (c.f ? '<span class="tag hot">Destaque</span>' : '') +
+      (nFotos > 1 ? '<span class="tag fotos">' + nFotos + ' fotos</span>' : '') +
     '</div>' +
     '<div class="card-in">' +
       '<div>' +
@@ -1729,8 +1916,7 @@ function card(c, idx){
       '</div>' +
       '<div class="card-foot">' +
         '<div class="price"><small>' + (c.p ? "À vista" : "Consulte") + '</small><b>' + priceTxt + '</b></div>' +
-        '<a class="go" href="' + window.WA(msg) + '" target="_blank" rel="noopener" ' +
-           'aria-label="Consultar ' + esc(c.m) + ' no WhatsApp">' + ICO.go + '</a>' +
+        '<span class="go" aria-hidden="true">' + ICO.go + '</span>' +
       '</div>' +
     '</div>' +
   '</article>';
@@ -1923,6 +2109,342 @@ window.renderCats = function(containerId, list){
     wrap.appendChild(a);
   });
 };
+
+})();
+
+</script>
+<script>
+/* =========================================================
+   MACHADO VEÍCULOS — modal de detalhes do veículo
+   Carrossel de fotos + ficha técnica + ações
+   Depende de: estoque-data.js (CARS, fotoURL) e main.js
+   ========================================================= */
+(function(){
+"use strict";
+var $ = window.$, $$ = window.$$;
+
+var ICO = {
+  prev:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  next:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  close:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  wa:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.6 2 2.2 6.4 2.2 11.85c0 1.9.5 3.7 1.45 5.3L2 22.4l5.4-1.6a9.8 9.8 0 004.64 1.18h.01c5.44 0 9.85-4.4 9.85-9.85S17.48 2 12.04 2zm5.72 13.9c-.24.68-1.4 1.3-1.94 1.35-.5.05-.98.23-3.3-.7-2.78-1.1-4.55-3.95-4.7-4.14-.13-.19-1.1-1.48-1.1-2.82 0-1.34.7-2 .95-2.28.24-.28.53-.35.7-.35h.5c.17 0 .4-.06.62.48.24.57.8 1.98.87 2.13.07.14.11.3.02.5-.1.19-.14.3-.28.47l-.42.48c-.14.14-.28.3-.12.58.16.29.72 1.18 1.54 1.92 1.06.94 1.95 1.24 2.23 1.38.28.15.44.12.6-.07.17-.2.7-.81.88-1.09.19-.28.37-.23.63-.14.25.1 1.62.77 1.9.9.28.15.46.22.53.34.07.12.07.68-.17 1.36z"/></svg>',
+  fin:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="2.8" y="5.2" width="18.4" height="13.6" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M2.8 9.8h18.4" stroke="currentColor" stroke-width="1.7"/><path d="M6.4 14.4h3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+  share:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="18" cy="5.5" r="2.6" stroke="currentColor" stroke-width="1.7"/><circle cx="6" cy="12" r="2.6" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="18.5" r="2.6" stroke="currentColor" stroke-width="1.7"/><path d="M8.3 10.8l7.4-4.1M8.3 13.2l7.4 4.1" stroke="currentColor" stroke-width="1.7"/></svg>',
+  check:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+
+function esc(s){
+  return String(s).replace(/[&<>"]/g, function(m){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m];
+  });
+}
+
+/* ---------------------------------------------------------
+   Estado do modal
+   --------------------------------------------------------- */
+var box = null, carro = null, idx = 0, ultimoFoco = null;
+
+function acheCarro(id){
+  for (var i = 0; i < window.CARS.length; i++){
+    if (window.CARS[i].id === String(id)) return window.CARS[i];
+  }
+  return null;
+}
+window.acheCarro = acheCarro;
+
+/* título curto e completo, reaproveitados nas mensagens */
+function tituloCurto(c){ return c.b + " " + c.m + " " + c.y; }
+function tituloLongo(c){ return c.b + " " + c.m + " " + c.v + " (" + c.y + ")"; }
+window.tituloCarro = tituloLongo;
+
+/* link permanente para o veículo */
+function linkVeiculo(c){
+  var base = location.origin + location.pathname;
+  if (/financiamento|consignacao/.test(location.pathname)){
+    base = base.replace(/[^\/]+$/, "estoque.html");
+  }
+  return base + "?v=" + c.id;
+}
+window.linkVeiculo = linkVeiculo;
+
+/* ---------------------------------------------------------
+   Monta o HTML do modal
+   --------------------------------------------------------- */
+function montar(){
+  if (box) return;
+  box = document.createElement("div");
+  box.className = "vmodal";
+  box.id = "vmodal";
+  box.setAttribute("role","dialog");
+  box.setAttribute("aria-modal","true");
+  box.setAttribute("aria-label","Detalhes do veículo");
+  box.innerHTML =
+    '<div class="vmodal-bg" data-fechar></div>' +
+    '<div class="vmodal-box">' +
+      '<button class="vmodal-x" data-fechar aria-label="Fechar">' + ICO.close + '</button>' +
+      '<div class="vmodal-scroll">' +
+        '<div class="vgal">' +
+          '<div class="vgal-palco">' +
+            '<div class="vgal-trilho" id="vTrilho"></div>' +
+            '<button class="vgal-nav prev" id="vPrev" aria-label="Foto anterior">' + ICO.prev + '</button>' +
+            '<button class="vgal-nav next" id="vNext" aria-label="Próxima foto">' + ICO.next + '</button>' +
+            '<span class="vgal-contador"><b id="vAtual">1</b> / <span id="vTotal">1</span></span>' +
+          '</div>' +
+          '<div class="vgal-thumbs" id="vThumbs"></div>' +
+        '</div>' +
+        '<div class="vinfo" id="vInfo"></div>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(box);
+
+  $$("[data-fechar]", box).forEach(function(el){
+    el.addEventListener("click", fechar);
+  });
+  $("vPrev").addEventListener("click", function(){ ir(idx - 1); });
+  $("vNext").addEventListener("click", function(){ ir(idx + 1); });
+
+  /* teclado */
+  document.addEventListener("keydown", function(e){
+    if (!box.classList.contains("open")) return;
+    if (e.key === "Escape") fechar();
+    else if (e.key === "ArrowLeft") ir(idx - 1);
+    else if (e.key === "ArrowRight") ir(idx + 1);
+  });
+
+  /* arrastar / swipe */
+  var x0 = null;
+  var palco = box.querySelector(".vgal-palco");
+  palco.addEventListener("pointerdown", function(e){ x0 = e.clientX; });
+  palco.addEventListener("pointerup", function(e){
+    if (x0 === null) return;
+    var d = e.clientX - x0;
+    if (Math.abs(d) > 45) ir(idx + (d < 0 ? 1 : -1));
+    x0 = null;
+  });
+  palco.addEventListener("pointercancel", function(){ x0 = null; });
+}
+
+/* ---------------------------------------------------------
+   Navegação da galeria
+   --------------------------------------------------------- */
+function ir(n){
+  if (!carro) return;
+  var total = carro.g.length;
+  idx = (n + total) % total;
+
+  var trilho = $("vTrilho");
+  trilho.style.transform = "translate3d(" + (-idx * 100) + "%,0,0)";
+
+  /* carrega sob demanda: a atual e as vizinhas */
+  $$(".vgal-foto", trilho).forEach(function(fig, i){
+    var img = fig.querySelector("img");
+    if (!img.src && Math.abs(i - idx) <= 2) img.src = img.dataset.src;
+    fig.classList.toggle("ativa", i === idx);
+  });
+
+  $("vAtual").textContent = idx + 1;
+  $$(".vthumb", $("vThumbs")).forEach(function(t, i){
+    t.classList.toggle("ativa", i === idx);
+    if (i === idx) t.scrollIntoView({block:"nearest", inline:"center", behavior:"smooth"});
+  });
+}
+
+/* ---------------------------------------------------------
+   Abre o modal com um veículo
+   --------------------------------------------------------- */
+function abrir(id, semHistorico){
+  var c = acheCarro(id);
+  if (!c) return;
+  montar();
+  carro = c;
+  idx = 0;
+  ultimoFoco = document.activeElement;
+
+  /* --- galeria --- */
+  $("vTrilho").innerHTML = c.g.map(function(nome, i){
+    return '<figure class="vgal-foto"><img data-src="' + fotoURL(c, i) + '" alt="' +
+      esc(tituloCurto(c)) + ' — foto ' + (i+1) + '" ' +
+      (i === 0 ? 'src="' + fotoURL(c, 0) + '"' : '') + '></figure>';
+  }).join("");
+  $("vTotal").textContent = c.g.length;
+  $("vThumbs").innerHTML = c.g.map(function(nome, i){
+    return '<button class="vthumb" aria-label="Foto ' + (i+1) + '">' +
+      '<img loading="lazy" src="' + fotoURL(c, i) + '" alt=""></button>';
+  }).join("");
+  $$(".vthumb", $("vThumbs")).forEach(function(t, i){
+    t.addEventListener("click", function(){ ir(i); });
+  });
+  var soUma = c.g.length < 2;
+  $("vPrev").style.display = soUma ? "none" : "";
+  $("vNext").style.display = soUma ? "none" : "";
+  $("vThumbs").style.display = soUma ? "none" : "";
+
+  /* --- ficha técnica --- */
+  var fichaBase = [
+    ["Marca", c.b], ["Modelo", c.m], ["Versão", c.v], ["Ano", c.y],
+    ["Quilometragem", window.kmFmt(c.km)], ["Câmbio", c.cam],
+    ["Combustível", c.comb], ["Cor", c.cor], ["Categoria", c.t],
+    ["Código", c.id]
+  ];
+  if (c.fx) for (var k in c.fx) fichaBase.push([k, c.fx[k]]);
+
+  var preco = c.p ? window.brl(c.p) : "Sob consulta";
+  var msgWA = "Olá! Tenho interesse no " + tituloLongo(c) + " — " + preco +
+              ".%0AVi no site: " + linkVeiculo(c) + "%0APode me passar mais informações?";
+
+  $("vInfo").innerHTML =
+    '<div class="vinfo-topo">' +
+      '<div>' +
+        '<span class="vinfo-marca">' + esc(c.b) + '</span>' +
+        '<h2 class="vinfo-nome">' + esc(c.m) + '</h2>' +
+        '<p class="vinfo-versao">' + esc(c.v) + '</p>' +
+      '</div>' +
+      '<div class="vinfo-preco"><small>' + (c.p ? "À vista" : "Consulte") + '</small><b>' + preco + '</b></div>' +
+    '</div>' +
+
+    '<div class="vinfo-tags">' +
+      '<span class="vtag">' + esc(c.y) + '</span>' +
+      '<span class="vtag">' + window.kmFmt(c.km) + '</span>' +
+      '<span class="vtag">' + esc(c.cam) + '</span>' +
+      '<span class="vtag">' + esc(c.comb) + '</span>' +
+      '<span class="vtag">' + esc(c.cor) + '</span>' +
+    '</div>' +
+
+    '<div class="vinfo-acoes">' +
+      '<a class="btn btn-wa" id="vWA" href="https://api.whatsapp.com/send?phone=' + window.WA_PHONE +
+        '&text=' + encodeURIComponent(msgWA).replace(/%250A/g,"%0A") + '" target="_blank" rel="noopener">' +
+        ICO.wa + 'Falar no WhatsApp</a>' +
+      '<a class="btn btn-brand" id="vFin" href="financiamento.html?v=' + c.id + '">' +
+        ICO.fin + 'Simular financiamento</a>' +
+      '<button class="btn btn-glass" id="vShare" type="button">' + ICO.share + 'Compartilhar</button>' +
+    '</div>' +
+
+    '<div class="vficha">' +
+      '<h3>Ficha técnica</h3>' +
+      '<dl>' + fichaBase.filter(function(p){ return p[1]; }).map(function(p){
+        return '<div><dt>' + esc(p[0]) + '</dt><dd>' + esc(p[1]) + '</dd></div>';
+      }).join("") + '</dl>' +
+    '</div>' +
+
+    (c.op && c.op.length ?
+      '<div class="vficha"><h3>Opcionais e equipamentos</h3><ul class="vitens">' +
+        c.op.map(function(o){ return '<li>' + ICO.check + esc(o) + '</li>'; }).join("") +
+      '</ul></div>' : '') +
+
+    (c.se && c.se.length ?
+      '<div class="vficha"><h3>Itens de série</h3><ul class="vitens">' +
+        c.se.map(function(o){ return '<li>' + ICO.check + esc(o) + '</li>'; }).join("") +
+      '</ul></div>' : '') +
+
+    '<p class="vinfo-nota">Informações fornecidas pela loja e sujeitas a alteração sem aviso. ' +
+    'Confirme os detalhes com um consultor antes de fechar negócio.</p>';
+
+  $("vShare").addEventListener("click", function(){ compartilhar(c); });
+
+  /* --- exibe --- */
+  box.classList.add("open");
+  document.body.style.overflow = "hidden";
+  ir(0);
+  var x = box.querySelector(".vmodal-x");
+  if (x) x.focus();
+  box.querySelector(".vmodal-scroll").scrollTop = 0;
+
+  if (!semHistorico){
+    try { history.pushState({v:c.id}, "", "?v=" + c.id); } catch(e){}
+  }
+  document.title = tituloCurto(c) + " — Machado Veículos";
+}
+window.abrirVeiculo = abrir;
+
+function fechar(){
+  if (!box) return;
+  box.classList.remove("open");
+  document.body.style.overflow = "";
+  carro = null;
+  if (ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
+  document.title = document.title.replace(/^.*— Machado Veículos$/, "Machado Veículos");
+  if (location.search.indexOf("v=") > -1){
+    try { history.pushState({}, "", location.pathname); } catch(e){}
+  }
+}
+
+/* volta do navegador fecha ou troca o veículo */
+window.addEventListener("popstate", function(){
+  var id = new URLSearchParams(location.search).get("v");
+  if (id) abrir(id, true);
+  else if (box && box.classList.contains("open")) fechar();
+});
+
+/* ---------------------------------------------------------
+   Compartilhar
+   --------------------------------------------------------- */
+function compartilhar(c){
+  var preco = c.p ? window.brl(c.p) : "Sob consulta";
+  var link = linkVeiculo(c);
+  var itens = (c.op || []).slice(0, 6);
+  var texto =
+    tituloLongo(c) + "\n" +
+    preco + "\n" +
+    window.kmFmt(c.km) + " · " + c.cam + " · " + c.comb + " · " + c.cor + "\n" +
+    (itens.length ? itens.join(", ") + "\n" : "") +
+    c.g.length + " fotos e ficha completa:\n" + link +
+    "\n\nMachado Veículos — Vilar dos Teles, São João de Meriti/RJ";
+
+  if (navigator.share){
+    navigator.share({ title: tituloCurto(c), text: texto, url: link })
+      .catch(function(){ /* usuário cancelou */ });
+    return;
+  }
+  /* sem Web Share: copia e oferece o WhatsApp */
+  var ok = function(){
+    window.toast("Link e detalhes copiados!");
+    window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent(texto), "_blank");
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(texto).then(ok, ok);
+  } else {
+    var ta = document.createElement("textarea");
+    ta.value = texto;
+    ta.style.cssText = "position:fixed;opacity:0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch(e){}
+    document.body.removeChild(ta);
+    ok();
+  }
+}
+
+/* ---------------------------------------------------------
+   Liga os cards ao modal (delegação, funciona com re-render)
+   --------------------------------------------------------- */
+document.addEventListener("click", function(e){
+  var alvo = e.target.closest("[data-veiculo]");
+  if (!alvo) return;
+  /* deixa links dentro do card seguirem seu próprio destino */
+  if (e.target.closest("a")) return;
+  e.preventDefault();
+  abrir(alvo.dataset.veiculo);
+});
+
+/* Enter / Espaço abrem o card focado pelo teclado */
+document.addEventListener("keydown", function(e){
+  if (e.key !== "Enter" && e.key !== " ") return;
+  var alvo = e.target.closest && e.target.closest("[data-veiculo]");
+  if (!alvo) return;
+  e.preventDefault();
+  abrir(alvo.dataset.veiculo);
+});
+
+/* abre direto se a URL trouxer ?v=
+   — só em páginas com grade de veículos; no financiamento o ?v=
+   apenas seleciona o carro no formulário, sem abrir o modal */
+function deepLink(){
+  if (!document.getElementById("cards")) return;
+  var id = new URLSearchParams(location.search).get("v");
+  if (id && acheCarro(id)) abrir(id, true);
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", deepLink);
+else deepLink();
 
 })();
 
