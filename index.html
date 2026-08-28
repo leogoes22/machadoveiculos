@@ -944,7 +944,7 @@ select.field option{background:#140c1c;color:var(--text);}
 .local-row a{transition:color .3s;}
 .local-row a:hover{color:var(--brand-lt);}
 .map-frame{position:relative;min-height:420px;background:var(--bg-3);}
-.map-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:invert(.92) hue-rotate(190deg) saturate(.7) contrast(.95);}
+.map-frame iframe{position:absolute;inset:0;z-index:1;width:100%;height:100%;border:0;}
 
 /* ---------------------------------------------------------
    25. RESPONSIVO
@@ -1174,6 +1174,41 @@ select.field option{background:#140c1c;color:var(--text);}
 }
 .card[data-veiculo]:focus-visible{outline:2px solid var(--brand-hi);outline-offset:3px;}
 
+/* =========================================================
+   27. ONDE ESTAMOS — ações e acabamento do mapa
+   ========================================================= */
+.local-acoes{display:flex;gap:11px;flex-wrap:wrap;margin-top:26px;}
+.local-acoes .btn{flex:1 1 165px;}
+
+/* vinheta por cima do mapa para casar com o fundo escuro.
+   pointer-events:none mantém o mapa arrastável e com zoom. */
+.map-frame::after{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  box-shadow:inset 0 0 80px 18px rgba(7,4,9,.5);
+}
+.map-frame iframe{
+  filter:invert(.9) hue-rotate(185deg) saturate(.85) brightness(1.04) contrast(.92);
+}
+/* quem preferir o mapa nas cores originais do Google:
+   apague a regra .map-frame iframe{filter:...} acima. */
+
+/* conteúdo de reserva atrás do mapa (só visível se o iframe não carregar) */
+.map-fallback{
+  position:absolute;inset:0;z-index:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;
+  text-align:center;padding:26px;color:var(--dim);
+  background:
+    repeating-linear-gradient(0deg,  rgba(255,255,255,.03) 0 1px, transparent 1px 46px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 46px),
+    var(--bg-3);
+}
+.map-fallback svg{color:var(--brand-hi);}
+.map-fallback b{font-family:var(--display);font-size:1.02rem;color:var(--text);font-weight:700;}
+.map-fallback span{font-size:.84rem;}
+.map-fallback .btn{margin-top:10px;}
+/* Google inacessível: some com o iframe e mostra a reserva */
+.map-frame.sem-mapa iframe{display:none;}
+
 </style>
 </head>
 <body>
@@ -1367,6 +1402,74 @@ select.field option{background:#140c1c;color:var(--text);}
     </div>
   </section>
 
+  <!-- ============ ONDE ESTAMOS ============ -->
+  <section class="sec" id="local" style="padding-top:0;">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="reveal">
+          <span class="eyebrow">Onde estamos</span>
+          <h2>Venha tomar<br>um café <em>com a gente</em></h2>
+        </div>
+        <p class="lede reveal">Estamos em Vilar dos Teles, São João de Meriti. Chegue sem compromisso — o carro que você viu no site está aqui no pátio.</p>
+      </div>
+
+      <div class="local-grid reveal-s">
+        <div class="local-card">
+          <h3>Machado <em>Veículos</em></h3>
+          <p style="color:var(--dim);font-size:.9rem;margin-bottom:6px;">Seminovos revisados, financiamento e consignação.</p>
+
+          <div class="local-row">
+            <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.4 7-10.5A7 7 0 105 10.5C5 15.6 12 21 12 21z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10.3" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg></span>
+            <div>
+              <b>Endereço</b>
+              <p>R. Salvador, 497 — Vilar dos Teles<br>São João de Meriti — RJ</p>
+            </div>
+          </div>
+
+          <div class="local-row">
+            <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M21.6 16.9v2.8a1.9 1.9 0 01-2.1 1.9 18.9 18.9 0 01-8.2-2.9 18.6 18.6 0 01-5.7-5.7A18.9 18.9 0 012.7 4.7 1.9 1.9 0 014.6 2.6h2.8a1.9 1.9 0 011.9 1.6c.1.9.3 1.7.6 2.5a1.9 1.9 0 01-.4 2L8.3 9.8a15.2 15.2 0 005.7 5.7l1.1-1.2a1.9 1.9 0 012-.4c.8.3 1.6.5 2.5.6a1.9 1.9 0 011.6 1.9z" stroke="currentColor" stroke-width="1.5"/></svg></span>
+            <div>
+              <b>Contato</b>
+              <p><a href="tel:+5521981150993">(21) 98115-0993</a><br><a href="https://api.whatsapp.com/send?phone=5521964637409&text=Ol%C3%A1!%20Vim%20pelo%20site." target="_blank" rel="noopener">WhatsApp (21) 96463-7409</a></p>
+            </div>
+          </div>
+
+          <div class="local-row">
+            <span class="ic"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5.2l3.2 3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+            <div>
+              <b>Horário</b>
+              <p>Segunda a sexta: 9h às 18h<br>Sábado: 9h às 16h</p>
+            </div>
+          </div>
+
+          <div class="local-acoes">
+            <a class="btn btn-brand" href="https://www.google.com/maps/dir/?api=1&destination=-22.7893328,-43.3637443&destination_place_id=Machado+Ve%C3%ADculos" target="_blank" rel="noopener">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 2.5l9 18.5-9-4.3-9 4.3 9-18.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+              Como chegar
+            </a>
+            <a class="btn btn-glass" href="https://maps.app.goo.gl/4hMFvvYcbDoSA4A5A" target="_blank" rel="noopener">Ver no Google Maps</a>
+          </div>
+        </div>
+
+        <div class="map-frame">
+          <!-- aparece apenas se o mapa não carregar (sem internet, bloqueio) -->
+          <div class="map-fallback">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.4 7-10.5A7 7 0 105 10.5C5 15.6 12 21 12 21z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="10.3" r="2.4" stroke="currentColor" stroke-width="1.5"/></svg>
+            <b>R. Salvador, 497 — Vilar dos Teles</b>
+            <span>São João de Meriti — RJ</span>
+            <a class="btn btn-glass btn-sm" href="https://maps.app.goo.gl/4hMFvvYcbDoSA4A5A" target="_blank" rel="noopener">Abrir no Google Maps</a>
+          </div>
+          <iframe
+            title="Mapa da Machado Veículos — R. Salvador, 497, Vilar dos Teles, São João de Meriti/RJ"
+            src="https://www.google.com/maps?q=-22.7893328,-43.3637443&hl=pt-BR&z=17&output=embed"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ FAQ ============ -->
   <section class="sec" id="duvidas" style="padding-top:0;">
     <div class="wrap">
@@ -1428,7 +1531,7 @@ select.field option{background:#140c1c;color:var(--text);}
       <div class="reveal">
         <h5>Contato</h5>
         <ul>
-          <li>R. Salvador, 497 — Vilar dos Teles<br>São João de Meriti — RJ</li>
+          <li><a href="index.html#local">R. Salvador, 497 — Vilar dos Teles<br>São João de Meriti — RJ</a></li>
           <li><a href="tel:+5521981150993">(21) 98115-0993</a></li>
           <li>Seg a Sex: 9h às 18h<br>Sáb: 9h às 16h</li>
         </ul>
@@ -1844,11 +1947,36 @@ window.setupForm = function(formId, buildMessage){
 })();
 
 /* ---------------------------------------------------------
-   12. BOOT
+   12. MAPA — se o Google estiver fora do ar ou bloqueado,
+   esconde o iframe e revela o conteúdo de reserva atrás dele
+   (um iframe com erro pintaria por cima da reserva)
+   --------------------------------------------------------- */
+function checarMapa(){
+  var frame = document.querySelector(".map-frame");
+  if (!frame || !frame.querySelector("iframe")) return;
+
+  var probe = new Image();
+  var decidido = false;
+  function falhou(){
+    if (decidido) return;
+    decidido = true;
+    frame.classList.add("sem-mapa");
+  }
+  function ok(){ decidido = true; }
+
+  probe.onload = ok;
+  probe.onerror = falhou;
+  setTimeout(falhou, 5000);
+  probe.src = "https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png?" + Date.now();
+}
+
+/* ---------------------------------------------------------
+   13. BOOT
    --------------------------------------------------------- */
 function boot(){
   observeReveals();
   bindGlow();
+  checarMapa();
   setTimeout(observeReveals, 600);
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
