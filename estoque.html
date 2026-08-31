@@ -1421,6 +1421,27 @@ var CARS = [
  {b:"Yamaha",m:"XTZ 250 Lander",v:"249cc — Trilha / Adventure",y:"2026",ys:2026,km:100,cam:"Manual",comb:"Flex",cor:"Preto",p:0,t:"Moto",f:1,id:"5340150",g:["1_110205", "2_110205", "6_110205", "3_110205", "4_110205", "7_110205", "8_110205", "5_110205"],fx:{"IPVA": "Pago", "Status": "Licenciado"},se:["Garantia de Fábrica", "Manual do proprietário", "Chave Reserva"]}
 ];
 
+/* ---------------------------------------------------------
+   Estoque ao vivo — busca o webhook do n8n e troca o CARS
+   estático acima pela versão mais recente. Se falhar ou
+   demorar mais que o tempo abaixo, mantém o array estático
+   (o site nunca fica sem carros).
+   TROQUE a URL abaixo pelo endereço real do webhook.
+   --------------------------------------------------------- */
+var ESTOQUE_API = "https://apin8n.lv-mktdeconversa.com/webhook/estoque-machado";
+window.ESTOQUE_READY = (function(){
+  var timeout = new Promise(function(resolve){ setTimeout(resolve, 2500); });
+  var busca = fetch(ESTOQUE_API, { cache: "no-store" })
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      if (data && data.ok && Array.isArray(data.veiculos) && data.veiculos.length){
+        window.CARS = data.veiculos;
+      }
+    })
+    .catch(function(){ /* sem internet ou webhook fora do ar: mantém o array estático acima */ });
+  return Promise.race([busca, timeout]);
+})();
+
 </script>
 <script>
 /* =========================================================
@@ -2361,8 +2382,10 @@ else deepLink();
 
 </script>
 <script>
+(window.ESTOQUE_READY || Promise.resolve()).then(function(){
   window.initStock({ initialShown: 12 });
   window.observeReveals();
+});
 </script>
 </body>
 </html>
